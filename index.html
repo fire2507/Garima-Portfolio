@@ -633,6 +633,17 @@
     /* Intentionally no orbit/ring elements are rendered in the hero markup. */
 
 
+    /* ---------- Home: profile jump dropdown ---------- */
+    .home-jump-dd { position: relative; display: inline-block; z-index: 40; }
+    .home-jump-caret { display: inline-block; margin-left: 5px; transition: transform .25s ease; }
+    .home-jump-dd.open .home-jump-caret { transform: rotate(180deg); }
+    .home-jump-menu { position: absolute; left: 50%; top: calc(100% + 10px); min-width: 270px; padding: 8px; text-align: left; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,.9); border-radius: 20px; box-shadow: 0 18px 40px rgba(42,32,53,.25); opacity: 0; visibility: hidden; pointer-events: none; transform: translate(-50%, -8px); transition: opacity .2s ease, transform .2s ease, visibility .2s; }
+    .home-jump-dd.open .home-jump-menu { opacity: 1; visibility: visible; pointer-events: auto; transform: translate(-50%, 0); }
+    .home-jump-menu a { display: flex; flex-direction: column; gap: 2px; padding: 11px 16px; border-radius: 14px; color: #2A2035; text-decoration: none; transition: background-color .2s ease; }
+    .home-jump-menu a span { font-weight: 800; font-size: .8rem; letter-spacing: .12em; text-transform: uppercase; }
+    .home-jump-menu a small { font-size: .7rem; font-weight: 500; letter-spacing: .02em; opacity: .65; }
+    .home-jump-menu a:hover, .home-jump-menu a:focus-visible { background: rgba(141,128,176,.22); outline: none; }
+
     /* ---------- Reach Me: résumé dropdown ---------- */
     .resume-dd { position: relative; display: inline-block; z-index: 30; }
     .resume-dd-caret { display: inline-block; margin-left: 4px; transition: transform .25s ease; }
@@ -807,9 +818,17 @@
 <button class="px-7 py-3.5 bg-palette-darkPlum text-white font-semibold text-sm rounded-xl hover:bg-palette-mutedPurple transition-all shadow-lg hover:shadow-xl" onclick="switchTab('projects')">
               EXPLORE PROJECTS →
             </button>
-<button class="px-7 py-3.5 glass-card font-semibold text-sm rounded-xl text-palette-darkPlum hover:bg-white/80 transition-all" onclick="switchTab('about')">
-              ↓ Download Résumé
-            </button>
+<div class="home-jump-dd" id="home-jump-dd">
+  <button aria-controls="home-jump-menu" aria-expanded="false" aria-haspopup="true" class="px-7 py-3.5 glass-card font-semibold text-sm rounded-xl text-palette-darkPlum hover:bg-white/80 transition-all" id="home-jump-btn" type="button">
+    NAVIGATE <span class="home-jump-caret">▾</span>
+  </button>
+  <div class="home-jump-menu" id="home-jump-menu" role="menu">
+    <a href="#home-experience" role="menuitem"><span>Experience</span><small>Work &amp; professional experience</small></a>
+    <a href="#home-pors" role="menuitem"><span>PORs</span><small>Positions of responsibility</small></a>
+    <a href="#home-achievements" role="menuitem"><span>Achievements</span><small>Honors &amp; recognition</small></a>
+    <a href="#home-tech-skills" role="menuitem"><span>Tech Skills</span><small>Technical skills &amp; tools</small></a>
+  </div>
+</div>
 </div>
 </div>
 <!-- Dream Unicorn: layered CSS 3D scene -->
@@ -820,7 +839,7 @@
 </div>
 </div>
 <!-- Experience Section -->
-<div class="max-w-7xl mx-auto px-6 py-12">
+<div class="max-w-7xl mx-auto px-6 py-12 scroll-mt-28" id="home-experience">
 <div class="mb-8">
 <span class="text-xs font-bold tracking-widest text-palette-mutedPurple uppercase">CAREER HISTORY</span>
 <h2 class="text-4xl md:text-5xl font-extrabold text-palette-darkPlum mt-1">WORK EXPERIENCE</h2>
@@ -875,7 +894,7 @@
 </div>
 </div>
 <!-- Leadership Section -->
-<div class="max-w-7xl mx-auto px-6 py-12">
+<div class="max-w-7xl mx-auto px-6 py-12 scroll-mt-28" id="home-pors">
 <div class="glass-card rounded-3xl p-8 md:p-12">
 <span class="text-xs font-bold tracking-widest text-palette-mutedPurple uppercase">COMMUNITY &amp; IMPACT</span>
 <h2 class="text-4xl md:text-5xl font-extrabold text-palette-darkPlum mt-1 mb-8">POSITIONS OF RESPONSIBILITY</h2>
@@ -909,7 +928,7 @@
 </div>
 </div>
 <!-- Achievements Section -->
-<div class="max-w-7xl mx-auto px-6 py-12">
+<div class="max-w-7xl mx-auto px-6 py-12 scroll-mt-28" id="home-achievements">
 <div class="glass-card rounded-3xl p-8 md:p-12">
 <span class="text-xs font-bold tracking-widest text-palette-mutedPurple uppercase">HONORS &amp; RECOGNITION</span>
 <h2 class="text-4xl md:text-5xl font-extrabold text-palette-darkPlum mt-1 mb-8">ACHIEVEMENTS</h2>
@@ -1115,7 +1134,7 @@
 </div>
 </div>
 <!-- Technical Skills Section -->
-<div class="max-w-7xl mx-auto px-6 py-12">
+<div class="max-w-7xl mx-auto px-6 py-12 scroll-mt-28" id="home-tech-skills">
 <div class="glass-card rounded-3xl p-8 md:p-12">
 <span class="text-xs font-bold tracking-widest text-palette-mutedPurple uppercase">COMPREHENSIVE TOOLKIT</span>
 <h2 class="text-4xl md:text-5xl font-extrabold text-palette-darkPlum mt-1 mb-8">TECHNICAL SKILLS</h2>
@@ -4016,6 +4035,28 @@ if(reduce){draw(3.6,3.6);}else requestAnimationFrame(frame);
 </script>
 <script>
   // ================= RÉSUMÉ DROPDOWN (Reach Me) =================
+  // ---------- Home profile jump dropdown ----------
+  (function () {
+    const dd = document.getElementById('home-jump-dd');
+    if (!dd) return;
+    const btn = document.getElementById('home-jump-btn');
+    const items = () => Array.from(dd.querySelectorAll('[role="menuitem"]'));
+    function setOpen(open) { dd.classList.toggle('open', open); btn.setAttribute('aria-expanded', String(open)); }
+    btn.addEventListener('click', (e) => { e.stopPropagation(); setOpen(!dd.classList.contains('open')); });
+    document.addEventListener('click', (e) => { if (!dd.contains(e.target)) setOpen(false); });
+    items().forEach(a => a.addEventListener('click', () => {
+      setOpen(false);
+      const target = document.querySelector(a.getAttribute('href'));
+      if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }));
+    dd.addEventListener('keydown', (e) => {
+      const list = items(), idx = list.indexOf(document.activeElement);
+      if (e.key === 'Escape') { setOpen(false); btn.focus(); }
+      else if (e.key === 'ArrowDown') { e.preventDefault(); setOpen(true); list[(idx + 1) % list.length].focus(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); setOpen(true); list[(idx - 1 + list.length) % list.length].focus(); }
+    });
+  })();
+
   (function () {
     const dd = document.getElementById('resume-dd');
     if (!dd) return;
